@@ -3,7 +3,6 @@ package com.example.coinexchange;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.TreeMap;
@@ -14,7 +13,7 @@ public class CoinExchange {
     public static TreeMap<Integer, Integer> cashDrawer = new TreeMap<>();
     public static int total = 0;
 
-    public static void continueTranscation(){
+    public static void continueTransaction(){
         System.out.println("Do you want to make another request? Choose yes or no.");
         String yesOrNo = scanner.next();
         switch(yesOrNo.toLowerCase()) {
@@ -30,69 +29,58 @@ public class CoinExchange {
     }
 
     public static void deposit(){
-        System.out.println("How much money do you want to deposit today?");
+        System.out.println("How much money (in dollars) do you want to deposit today?");
         int depositAmount = scanner.nextInt();
         int tempBalance = 0;
-        if(depositAmount > 0){System.out.println("Okay, I can deposit " + depositAmount + " dollars for you.");}
 
-        System.out.println("For each bill type please specify how many you have to deposit");
-        for(Integer i : cashDrawer.keySet()) {
-            System.out.println("Please input how many " + i + "'s");
-            int billAmount = scanner.nextInt();
-            tempBalance = (depositAmount - (i * billAmount));
-            System.out.println(depositAmount);
-            System.out.println(tempBalance);
-
-
-
-            if(tempBalance > i){
+        if(depositAmount > 0){
+            System.out.println("Okay, I can deposit up to " + depositAmount + " dollars for you.");
+            System.out.println("For each bill type please specify how many you have to deposit");
+            for(Integer i : cashDrawer.keySet()) {
+                System.out.println("Please input how many " + i + "'s");
+                int billAmount = scanner.nextInt();
+                tempBalance = (depositAmount - (i * billAmount));
                 int currentNumber = cashDrawer.get(i);
                 cashDrawer.put(i, currentNumber + billAmount);
                 depositAmount = depositAmount - (i * billAmount);
-                System.out.println(depositAmount);
             }
-            if(tempBalance < i){
-                System.out.println("Oops, it seems we don't have anymore bills to deposit. Please try depositing again");
-                tempBalance = 0;
-                break;
-            }
-            else { break;}
-
-
-
+            displayBalanceOfEach();
+            displayTotalInAccount();
+            System.out.println("Do you want change back from your account deposit?");
+            String answer = scanner.next();
+            if(answer.equals("yes")){
+                withdrawal();
+            } else {
+            continueTransaction();}}
+        else {
+            System.out.println("You chose to deposit 0 dollars. Let's Try again.");
+            transactionInput();
         }
-        displayBalanceOfEach();
-        displayTotalInAccount();
-        continueTranscation();
     }
     public static void withdrawal(){
-        System.out.println("How much money do you want to withdraw today?");
+        System.out.println("How much money (in dollars) do you want to withdraw today?");
         int withdrawAmount = scanner.nextInt();
-        if(total > withdrawAmount){
-        System.out.println("Okay, I can withdraw " + withdrawAmount + " dollars for you.");
+        int tempBalance = 0;
+        System.out.println(total);
+        if(total > withdrawAmount) {
+            System.out.println("Okay, I can withdraw " + withdrawAmount + " dollars for you.");
+                System.out.println("For each bill type please specify how many you want to with draw, but no more than " + withdrawAmount + " dollars.");
+                for (Integer i : cashDrawer.keySet()) {
+                    System.out.println("Please input how many " + i + "'s");
+                    int billAmount = scanner.nextInt();
+                    tempBalance = (withdrawAmount - (i * billAmount));
+                    int currentNumber = cashDrawer.get(i);
+                    cashDrawer.put(i, currentNumber - billAmount);
+                    withdrawAmount = withdrawAmount - (i * billAmount);
+                }
+                displayBalanceOfEach();
+                displayTotalInAccount();
+                continueTransaction();
+            } else {
+                System.out.println("Your current balance is " + total + " dollars. Please try again within that amount.");
+                transactionInput();
 
-        for(Integer i : cashDrawer.keySet()) {
-            System.out.println("Please input how many " + i + "'s you want");
-            int billAmount = scanner.nextInt();
-            System.out.println(billAmount);
-            int currentNumber = cashDrawer.get(i);
-            System.out.println(currentNumber);
-            System.out.println(billAmount - currentNumber > 0);
-            if((billAmount - currentNumber) > 0){
-                cashDrawer.put(i, billAmount - currentNumber);
-            }
-            if((billAmount - currentNumber) < 1){
-                System.out.println("Oops, it seems we don't have enough bills for that amount");
-            }
         }
-        } else {
-            System.out.println("There are insufficient funds for this transaction.");
-            displayTotalInAccount();
-            continueTranscation();
-        }
-        displayBalanceOfEach();
-        displayTotalInAccount();
-        continueTranscation();
     }
 
     public static void displayBalanceOfEach(){
@@ -102,11 +90,12 @@ public class CoinExchange {
     }
 
     public static void displayTotalInAccount() {
+        total = 0;
         for (Map.Entry<Integer, Integer> entry :
                 cashDrawer.entrySet())
             total = total + (entry.getValue() * entry.getKey());
         System.out.println("Your current balance is " + total + " dollars.");
-        continueTranscation();
+
     }
 
     public static void transactionInput(){
@@ -123,6 +112,7 @@ public class CoinExchange {
             case "balance" :
                 displayBalanceOfEach();
                 displayTotalInAccount();
+                continueTransaction();
                 break;
             default:
                 break;

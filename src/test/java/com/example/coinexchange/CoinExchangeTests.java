@@ -6,10 +6,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.PrintStream;
+import java.io.*;
+import java.util.TreeMap;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -41,7 +39,7 @@ class CoinExchangeTests {
         ByteArrayInputStream in = new ByteArrayInputStream(inputText.getBytes());
         System.out.println(in);
         System.setIn(in);
-        CoinExchange.continueTransaction("no");
+        CoinExchange.continueTransaction(inputText);
         String output = outContent.toString();
         return output;
     }
@@ -52,33 +50,55 @@ class CoinExchangeTests {
         assertEquals(true, output.contains("Thanks for visiting, your transaction is complete"));
     }
 
+    public String displayTotalInAccount(TreeMap<Integer, Integer> treeMap) throws IOException {
+        ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
+        ObjectOutputStream out = new ObjectOutputStream(byteOut);
+        out.writeObject(treeMap);
+
+        ByteArrayInputStream in = new ByteArrayInputStream(byteOut.toByteArray());
+        System.out.println(in);
+        System.setIn(in);
+        CoinExchange.displayTotalInAccount(treeMap);
+        String output = outContent.toString();
+        return output;
+    }
+    
     @Test
-    public void testContinueTransaction(){
+    public void testDisplayTotal() throws IOException {
+        TreeMap<Integer, Integer> cashDrawer = new TreeMap<>();
+        cashDrawer.put(1, 1);
+        cashDrawer.put(5, 2);
+        cashDrawer.put(10, 3);
+        cashDrawer.put(20, 4);
+        String output = displayTotalInAccount(cashDrawer);
+        assertEquals(true, output.contains("Your current balance is 121 dollars."));
+    }
+
+    public String displayBalanceOfEach(TreeMap<Integer, Integer> treeMap) throws IOException {
+        ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
+        ObjectOutputStream out = new ObjectOutputStream(byteOut);
+        out.writeObject(treeMap);
+
+        ByteArrayInputStream in = new ByteArrayInputStream(byteOut.toByteArray());
+        System.out.println(in);
+        System.setIn(in);
+        CoinExchange.displayBalanceOfEach(treeMap);
+        String output = outContent.toString();
+        return output;
     }
 
     @Test
-    public void testDeposit(){
-
-    }
-
-    @Test
-    public void testWithdrawal(){
-
-    }
-
-    @Test
-    public void testDisplayBalanceOfEach() {
-
-    }
-
-    @Test
-    public void testDisplayTotalInAccount() {
-
-    }
-
-    @Test
-    public void testTransactionInput() {
-
+    public void testDisplayBalanceOfEach() throws IOException {
+        TreeMap<Integer, Integer> cashDrawer = new TreeMap<>();
+        cashDrawer.put(1, 1);
+        cashDrawer.put(5, 2);
+        cashDrawer.put(10, 3);
+        cashDrawer.put(20, 4);
+        String output = displayBalanceOfEach(cashDrawer);
+        assertEquals(true, output.contains("1 of 1's"));
+        assertEquals(true, output.contains("2 of 5's"));
+        assertEquals(true, output.contains("3 of 10's"));
+        assertEquals(true, output.contains("4 of 20's"));
     }
 
 }

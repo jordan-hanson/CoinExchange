@@ -16,6 +16,7 @@ public class CoinExchange {
     public static void continueTransaction(String input){
         switch(input.toLowerCase()) {
             case "yes" :
+                System.out.println("Okay, let's start another transaction for you.");
                 transactionInput();
                 break;
             case "no" :
@@ -42,9 +43,9 @@ public class CoinExchange {
                 cashDrawer.put(i, currentNumber + billAmount);
                 depositAmount = depositAmount - (i * billAmount);
             }
-            displayBalanceOfEach();
-            displayTotalInAccount();
-            System.out.println("Do you want change back from your account deposit?");
+            displayBalanceOfEach(cashDrawer);
+            displayTotalInAccount(cashDrawer);
+            System.out.println("Do you want change back from your account deposit? yes/no");
             String answer = scanner.next();
             if(answer.equals("yes")){
                 withdrawal();
@@ -73,8 +74,8 @@ public class CoinExchange {
                     cashDrawer.put(i, currentNumber - billAmount);
                     withdrawAmount = withdrawAmount - (i * billAmount);
                 }
-                displayBalanceOfEach();
-                displayTotalInAccount();
+                displayBalanceOfEach(cashDrawer);
+                displayTotalInAccount(cashDrawer);
             System.out.println("Do you want to make another request? Choose yes or no.");
             String yesOrNo = scanner.next();
                 continueTransaction(yesOrNo);
@@ -85,16 +86,16 @@ public class CoinExchange {
         }
     }
 
-    public static void displayBalanceOfEach(){
+    public static void displayBalanceOfEach(TreeMap<Integer, Integer> treeMap){
         for (Map.Entry<Integer, Integer> entry :
-                cashDrawer.entrySet())
+                treeMap.entrySet())
             System.out.println(entry.getValue() + " of " + entry.getKey() + "'s");
     }
 
-    public static void displayTotalInAccount() {
+    public static void displayTotalInAccount(TreeMap<Integer, Integer> treeMap) {
         total = 0;
         for (Map.Entry<Integer, Integer> entry :
-                cashDrawer.entrySet())
+                treeMap.entrySet())
             total = total + (entry.getValue() * entry.getKey());
         System.out.println("Your current balance is " + total + " dollars.");
 
@@ -112,8 +113,8 @@ public class CoinExchange {
                 withdrawal();
                 break;
             case "balance" :
-                displayBalanceOfEach();
-                displayTotalInAccount();
+                displayBalanceOfEach(cashDrawer);
+                displayTotalInAccount(cashDrawer);
                 System.out.println("Do you want to make another request? Choose yes or no.");
                 String yesOrNo = scanner.next();
                 continueTransaction(yesOrNo);

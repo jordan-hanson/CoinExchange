@@ -13,10 +13,8 @@ public class CoinExchange {
     public static TreeMap<Integer, Integer> cashDrawer = new TreeMap<>();
     public static int total = 0;
 
-    public static void continueTransaction(){
-        System.out.println("Do you want to make another request? Choose yes or no.");
-        String yesOrNo = scanner.next();
-        switch(yesOrNo.toLowerCase()) {
+    public static void continueTransaction(String input){
+        switch(input.toLowerCase()) {
             case "yes" :
                 transactionInput();
                 break;
@@ -51,7 +49,9 @@ public class CoinExchange {
             if(answer.equals("yes")){
                 withdrawal();
             } else {
-            continueTransaction();}}
+                System.out.println("Do you want to make another request? Choose yes or no.");
+                String yesOrNo = scanner.next();
+            continueTransaction(yesOrNo);}}
         else {
             System.out.println("You chose to deposit 0 dollars. Let's Try again.");
             transactionInput();
@@ -75,7 +75,9 @@ public class CoinExchange {
                 }
                 displayBalanceOfEach();
                 displayTotalInAccount();
-                continueTransaction();
+            System.out.println("Do you want to make another request? Choose yes or no.");
+            String yesOrNo = scanner.next();
+                continueTransaction(yesOrNo);
             } else {
                 System.out.println("Your current balance is " + total + " dollars. Please try again within that amount.");
                 transactionInput();
@@ -112,7 +114,9 @@ public class CoinExchange {
             case "balance" :
                 displayBalanceOfEach();
                 displayTotalInAccount();
-                continueTransaction();
+                System.out.println("Do you want to make another request? Choose yes or no.");
+                String yesOrNo = scanner.next();
+                continueTransaction(yesOrNo);
                 break;
             default:
                 break;

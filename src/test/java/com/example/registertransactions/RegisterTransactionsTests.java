@@ -1,4 +1,4 @@
-package com.example.coinexchange;
+package com.example.registertransactions;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -7,6 +7,8 @@ import org.junit.jupiter.api.TestInstance;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.TreeMap;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -14,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class CoinExchangeTests {
+class RegisterTransactionsTests {
     private ByteArrayOutputStream outContent = new ByteArrayOutputStream();
     private ByteArrayOutputStream errContent = new ByteArrayOutputStream();
 
@@ -39,7 +41,7 @@ class CoinExchangeTests {
         ByteArrayInputStream in = new ByteArrayInputStream(inputText.getBytes());
         System.out.println(in);
         System.setIn(in);
-        CoinExchange.continueTransaction(inputText);
+        RegisterTransactions.continueTransaction(inputText);
         String output = outContent.toString();
         return output;
     }
@@ -58,7 +60,7 @@ class CoinExchangeTests {
         ByteArrayInputStream in = new ByteArrayInputStream(byteOut.toByteArray());
         System.out.println(in);
         System.setIn(in);
-        CoinExchange.displayTotalInAccount(treeMap);
+        RegisterTransactions.displayTotalInAccount(treeMap);
         String output = outContent.toString();
         return output;
     }
@@ -82,7 +84,7 @@ class CoinExchangeTests {
         ByteArrayInputStream in = new ByteArrayInputStream(byteOut.toByteArray());
         System.out.println(in);
         System.setIn(in);
-        CoinExchange.displayBalanceOfEach(treeMap);
+        RegisterTransactions.displayBalanceOfEach(treeMap);
         String output = outContent.toString();
         return output;
     }
@@ -99,6 +101,31 @@ class CoinExchangeTests {
         assertEquals(true, output.contains("2 of 5's"));
         assertEquals(true, output.contains("3 of 10's"));
         assertEquals(true, output.contains("4 of 20's"));
+    }
+
+
+    @Test
+    public void testAllWaysToMakeChange() {
+        List<TreeMap<Integer, Integer>> listOfAllCombos = new ArrayList<>();
+
+        TreeMap<Integer, Integer> cashDrawerKeyValues = new TreeMap<>();
+        cashDrawerKeyValues.put(1, 0);
+        cashDrawerKeyValues.put(2, 0);
+        cashDrawerKeyValues.put(5, 0);
+        cashDrawerKeyValues.put(10, 0);
+        cashDrawerKeyValues.put(20, 0);
+
+        TreeMap<Integer, Integer> expectedFirstValue = new TreeMap<>();
+        expectedFirstValue.put(1, 0);
+        expectedFirstValue.put(2, 0);
+        expectedFirstValue.put(5, 1);
+        expectedFirstValue.put(10, 1);
+        expectedFirstValue.put(20, 0);
+
+        RegisterTransactions.listAllWaysToMakeChange(15, 1, "", listOfAllCombos, cashDrawerKeyValues);
+
+        assertEquals(22, listOfAllCombos.size());
+        assertEquals(expectedFirstValue, listOfAllCombos.get(0));
     }
 
 }

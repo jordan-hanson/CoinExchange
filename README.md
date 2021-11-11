@@ -1,4 +1,4 @@
-# CoinExchange
+# RegisterExchange
 
 This is a basic Bank Register application. It works off of user input with the terminal CLI. This Java Spring application will take in deposits, withdrawals, and basic balances.
 
